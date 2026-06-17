@@ -1,5 +1,15 @@
 # Changelog
 
+### 1.5.1
+*(Note: Most of these issues were introduced in the unreleased 1.5.0 version and have been resolved before public release)*
+* Fixed connection issues on Minecraft 1.20.5+ by supporting the new Netty connection format.
+* Fixed compatibility with Simple Voice Chat (no longer shows disconnected icon).
+* Fixed game crashes/freezes on certain MC versions (improved mixin compatibility).
+* Fixed a memory/connection leak that could corrupt subsequent connections.
+* Fixed a potential infinite recursion/crash with No-Chat-Reports.
+* Fixed a DNS suffix security check bypass.
+* Performance and minor improvements (cached addresses, optimized DNS queries, and error formatting fixes).
+
 ### 1.5.0
 * Added a built-in No-Chat-Reports feature so player signatures are stripped automatically when Offline Mode is active. No more annoying warnings.
 * Automatically turns off secure profiles when opening a LAN server in offline mode.
