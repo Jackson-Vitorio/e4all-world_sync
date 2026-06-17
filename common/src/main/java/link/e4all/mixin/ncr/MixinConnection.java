@@ -3,6 +3,7 @@ package link.e4all.mixin.ncr;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -24,6 +25,7 @@ public abstract class MixinConnection {
     private PacketListener packetListener;
 
     // Re-entry guard to prevent infinite recursion when we call send() with the converted packet
+    @Unique
     private static final ThreadLocal<Boolean> e4all$converting = ThreadLocal.withInitial(() -> false);
 
     @Inject(method = "send(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketSendListener;)V", at = @At("HEAD"), cancellable = true, require = 0)
@@ -35,7 +37,7 @@ public abstract class MixinConnection {
             try {
                 ((Connection) (Object) this).send(systemPacket, packetSendListener);
             } finally {
-                e4all$converting.set(false);
+                e4all$converting.remove();
             }
         }
     }
@@ -49,7 +51,7 @@ public abstract class MixinConnection {
             try {
                 ((Connection) (Object) this).send(systemPacket, packetSendListener, flush);
             } finally {
-                e4all$converting.set(false);
+                e4all$converting.remove();
             }
         }
     }

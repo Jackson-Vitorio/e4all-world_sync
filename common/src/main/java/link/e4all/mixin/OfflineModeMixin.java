@@ -5,7 +5,6 @@ import link.e4all.Config;
 import link.e4all.E4allClient;
 import link.e4all.Mirror;
 import net.minecraft.network.Connection;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,10 +35,6 @@ public abstract class OfflineModeMixin {
 
     @Shadow @Final
     Connection connection;
-
-    @Shadow @Final
-    MinecraftServer server;
-
 
 
     /**

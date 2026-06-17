@@ -228,6 +228,12 @@ public class Mirror {
                 method.invoke(source, (Supplier<Component>) () -> message, true);
                 return;
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {}
+            // Fallback: 1-arg signature (e.g. sendFailure(Component) has no boolean param)
+            try {
+                Method method = clazz.getMethod(methodName, Component.class);
+                method.invoke(source, message);
+                return;
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {}
         }
     }
 

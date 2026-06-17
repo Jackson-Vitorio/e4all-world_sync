@@ -27,6 +27,7 @@
   },
   "client": [
     "ClientHandshakePacketListenerImplMixin",
+    "IntegratedServerMixin",
     "ServerAddressMixin",
     "ServerNameResolverMixin",
     "ShareToLanScreenMixin"

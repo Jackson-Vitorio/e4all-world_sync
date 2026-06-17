@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.6.0
+* Fixed offline mode connection issues on Dialtone.
+* Fixed voice chat breaking for some players.
+* Fixed errors not showing up when using commands.
+* Fixed some crashes with other mods.
+
 ### 1.5.6
 * Fixed voice chat.
 * Fixed an issue that made 26.1.x for Fabric not work.
