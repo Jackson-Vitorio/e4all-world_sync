@@ -1,0 +1,9 @@
+{
+    "text.e4all_minecraft.domainAssigned": "Lokální hra hostována na doméně [%s]",
+    "text.e4all_minecraft.closeServer": "Lokální hra již není veřejně hostována",
+    "text.e4all_minecraft.serverAlreadyClosed": "Lokální hra není veřejně hostována",
+    "text.e4all_minecraft.clickToStop": " (Klikněte sem pro zastavení)",
+    "text.e4all_minecraft.error": "V modu e4all došlo k chybě",
+    "text.e4all_minecraft.doctor.start": "Generování informací pro řešení problémů. Čekejte prosím.",
+    "text.e4all_minecraft.poisonpill.badurl": "Mod e4all byl stažen z neznámého zdroje. Tato kopie modu e4all může být zastaralá nebo upravená."
+}

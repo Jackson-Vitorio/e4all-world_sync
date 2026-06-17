@@ -324,7 +324,7 @@ public class QuiclimeSession {
                                         int delay = RECONNECT_BASE_DELAY_SECONDS * (1 << (attempts - 1));
                                         LOGGER.info("Auto-reconnecting to relay in {}s (attempt {}/{})", delay, attempts, MAX_RECONNECT_ATTEMPTS);
                                         if (Agnos.isClient()) {
-                                            Mirror.addMessage(Mirror.translatable("text.e4mc_minecraft.reconnecting"));
+                                            Mirror.addMessage(Mirror.translatable("text.e4all_minecraft.reconnecting"));
                                         }
                                         var reconnectThread = new Thread(() -> {
                                             try {
@@ -349,7 +349,7 @@ public class QuiclimeSession {
                                         LOGGER.error("Max reconnect attempts ({}) reached; giving up", MAX_RECONNECT_ATTEMPTS);
                                         state = State.STOPPED;
                                         if (Agnos.isClient()) {
-                                            Mirror.addMessage(Mirror.translatable("text.e4mc_minecraft.error"));
+                                            Mirror.addMessage(Mirror.translatable("text.e4all_minecraft.error"));
                                         }
                                     }
                                 } else {
@@ -388,14 +388,14 @@ public class QuiclimeSession {
                                         LOGGER.info("Domain assigned: {}", domain);
                                         if (Agnos.isClient()) {
                                             Component message = Mirror.append(Mirror.translatable(
-                                                    "text.e4mc_minecraft.domainAssigned",
+                                                    "text.e4all_minecraft.domainAssigned",
                                                     Mirror.withStyle(Mirror.literal(domain), it ->
                                                     it
                                                             .withClickEvent(Mirror.copyToClipboard(domain))
                                                             .withColor(ChatFormatting.GREEN)
                                                             .withHoverEvent(Mirror.showText(Mirror.translatable("chat.copy.click"))))
                                             ),
-                                                    Mirror.withStyle(Mirror.translatable("text.e4mc_minecraft.clickToStop"), it ->
+                                                    Mirror.withStyle(Mirror.translatable("text.e4all_minecraft.clickToStop"), it ->
                                                             it
                                                                     .withClickEvent(Mirror.runCommand("/e4all stop"))
                                                                     .withColor(ChatFormatting.GRAY)
@@ -403,13 +403,13 @@ public class QuiclimeSession {
                                             );
                                             Mirror.addMessage(message);
                                             if (E4allClient.badurl) {
-                                                Mirror.addMessage(Mirror.translatable("text.e4mc_minecraft.poisonpill.badurl"));
+                                                Mirror.addMessage(Mirror.translatable("text.e4all_minecraft.poisonpill.badurl"));
                                             }
                                             // Show offline mode warning when LAN actually opens
                                             if (Config.INSTANCE.offlineMode.value()) {
                                                 Config.INSTANCE.offlineWarningShown.setValue(true, true);
                                                 LOGGER.warn("e4all: Offline mode enabled — Microsoft authentication is disabled for this session.");
-                                                Mirror.addMessage(Mirror.withStyle(Mirror.translatable("text.e4mc_minecraft.offlineModeWarning"), it -> it.withColor(ChatFormatting.RED)));
+                                                Mirror.addMessage(Mirror.withStyle(Mirror.translatable("text.e4all_minecraft.offlineModeWarning"), it -> it.withColor(ChatFormatting.RED)));
                                             }
                                         }
                                     }
@@ -508,7 +508,7 @@ public class QuiclimeSession {
         failureCause = e;
         E4allClient.LOGGER.error("error in e4all", e);
         if (Agnos.isClient()) {
-            Mirror.addMessage(Mirror.translatable("text.e4mc_minecraft.error"));
+            Mirror.addMessage(Mirror.translatable("text.e4all_minecraft.error"));
         }
     }
 

@@ -56,9 +56,9 @@ public class E4allClient {
                             synchronized (SESSION_LOCK) {
                                 if ((session != null) && (session.state != QuiclimeSession.State.STOPPED)) {
                                     session.stop();
-                                    Mirror.sendSuccessToSource(ctx.getSource(), Mirror.translatable("text.e4mc_minecraft.closeServer"));
+                                    Mirror.sendSuccessToSource(ctx.getSource(), Mirror.translatable("text.e4all_minecraft.closeServer"));
                                 } else {
-                                    Mirror.sendFailureToSource(ctx.getSource(), Mirror.translatable("text.e4mc_minecraft.serverAlreadyClosed"));
+                                    Mirror.sendFailureToSource(ctx.getSource(), Mirror.translatable("text.e4all_minecraft.serverAlreadyClosed"));
                                 }
                             }
                             return 1;
@@ -66,7 +66,7 @@ public class E4allClient {
                         .then(Commands.literal("doctor").executes(ctx -> {
                             var thread = new Thread(() -> {
                                 LOGGER.info("generating e4all doctor report");
-                                Mirror.sendSuccessToSource(ctx.getSource(), Mirror.translatable("text.e4mc_minecraft.doctor.start"));
+                                Mirror.sendSuccessToSource(ctx.getSource(), Mirror.translatable("text.e4all_minecraft.doctor.start"));
                                 var diag = Doctor.doctor();
                                 LOGGER.info("e4all doctor report:\n{}", diag);
                                 Mirror.sendSuccessToSource(ctx.getSource(), Mirror.literal(diag));
@@ -102,8 +102,8 @@ public class E4allClient {
                             Config.INSTANCE.offlineMode.setValue(!current, true);
                             Mirror.sendSuccessToSource(ctx.getSource(),
                                 Mirror.translatable(current
-                                    ? "text.e4mc_minecraft.offlineModeDisabled"
-                                    : "text.e4mc_minecraft.offlineModeEnabled"));
+                                    ? "text.e4all_minecraft.offlineModeDisabled"
+                                    : "text.e4all_minecraft.offlineModeEnabled"));
                             Mirror.sendSuccessToSource(ctx.getSource(),
                                 Mirror.withStyle(Mirror.literal("Note: This change applies to new connections only."), it ->
                                     it.withColor(net.minecraft.ChatFormatting.GRAY)));

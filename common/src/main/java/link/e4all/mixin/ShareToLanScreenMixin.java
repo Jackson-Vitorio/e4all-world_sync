@@ -207,8 +207,8 @@ public abstract class ShareToLanScreenMixin extends Screen {
 
     @Unique
     private Component e4all$getButtonText(boolean offlineMode) {
-        Component label = Mirror.translatable("text.e4mc_minecraft.onlineMode");
-        Component value = Mirror.translatable(offlineMode ? "text.e4mc_minecraft.onlineModeFalse" : "text.e4mc_minecraft.onlineModeTrue");
+        Component label = Mirror.translatable("text.e4all_minecraft.onlineMode");
+        Component value = Mirror.translatable(offlineMode ? "text.e4all_minecraft.onlineModeFalse" : "text.e4all_minecraft.onlineModeTrue");
         return Mirror.append(
             Mirror.literal(""),
             Mirror.append(label, value)

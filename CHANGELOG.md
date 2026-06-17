@@ -5,6 +5,19 @@
 * Fixed voice chat breaking for some players.
 * Fixed errors not showing up when using commands.
 * Fixed some crashes with other mods.
+* Integrated community translations from the original e4mc repository. Huge thanks to the translators:
+  * @zelear (Bashkir, German, Russian, Tatar)
+  * @emi0x0 (Dutch)
+  * @Fjuro & @Luky12568 (Czech)
+  * @Axillux (Kazakh, Russian, Vietnamese)
+  * @KiwiCabreaoo (Andalusian Spanish)
+  * @kluas005 (Portuguese Brazil)
+  * @Lucanoria (German)
+  * @NuruddinPlays (Malay)
+  * @Biquaternions (Spanish)
+  * @Tarteroycc (Ukrainian)
+  * @vazanoir (French)
+  *(Note: English is 100% finished. Other languages are only ~30% finished as they lack translations for the newer e4all Offline Mode features).*
 
 ### 1.5.6
 * Fixed voice chat.
