@@ -34,6 +34,12 @@ public class E4allMixinPlugin implements IMixinConfigPlugin {
             if (!HAS_SIGNATURES) {
                 return false;
             }
+            // Check if the target class exists without loading it via Class.forName,
+            // which would mark it as "already loaded" and prevent mixin transformation.
+            String classResourcePath = targetClassName.replace('.', '/') + ".class";
+            if (this.getClass().getClassLoader().getResource(classResourcePath) == null) {
+                return false; // Safely disable this mixin to prevent crash
+            }
         }
         return true;
     }
