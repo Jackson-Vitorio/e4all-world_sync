@@ -31,7 +31,7 @@ import java.net.SocketAddress;
 public abstract class ConnectionMixin implements DialtoneConnectionExtensions {
 
     @Shadow private Channel channel;
-    @Shadow private boolean encrypted;
+
     @Unique
     private static volatile DialtoneAddress e4mc$smuggledDialtoneAddress = null;
 
@@ -135,7 +135,18 @@ public abstract class ConnectionMixin implements DialtoneConnectionExtensions {
     @Inject(method = "/^(setEncryptionKey|method_10746|m_129506_)$/", at = @At("HEAD"), cancellable = true, require = 0)
     private void killDoubleEncryption(Cipher cipher, Cipher cipher2, CallbackInfo ci) {
         if (channel instanceof DialtoneChannel) {
-            encrypted = true;
+            // Mark the connection as encrypted if the field still exists (pre-26.2).
+            // In 26.2+ the field was removed, but the cancellation alone is sufficient
+            // to prevent double encryption on DialtoneChannel.
+            try {
+                java.lang.reflect.Field encryptedField = Connection.class.getDeclaredField("encrypted");
+                encryptedField.setAccessible(true);
+                encryptedField.setBoolean((Connection)(Object)this, true);
+            } catch (NoSuchFieldException ignored) {
+                // MC 26.2+ removed this field — safe to skip
+            } catch (Exception e) {
+                E4allClient.LOGGER.debug("Could not set encrypted field", e);
+            }
             ci.cancel();
         }
     }

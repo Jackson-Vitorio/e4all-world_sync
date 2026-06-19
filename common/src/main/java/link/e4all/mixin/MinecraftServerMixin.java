@@ -1,6 +1,5 @@
 package link.e4all.mixin;
 
-import link.e4all.Config;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

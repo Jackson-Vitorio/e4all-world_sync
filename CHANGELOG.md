@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.6.5
+* Experimental 26.2 support.
+* Internal code cleanups.
+
 ### 1.6.0
 * https://github.com/Synquox/e4all/pull/7 Pull request from khoingt helped making this fix.
 * Fixed offline mode connection issues on Dialtone.
