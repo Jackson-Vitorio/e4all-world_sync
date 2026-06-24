@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import link.e4all.Config;
 import link.e4all.E4allClient;
 import link.e4all.Mirror;
-import link.e4all.dialtone.DialtoneAddress;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.PlayerList;
@@ -47,7 +46,7 @@ public abstract class PlayerListMixin {
 
     @Inject(method = "canPlayerLogin", at = @At("HEAD"), cancellable = true, require = 0)
     public void allowOwnerLogin(SocketAddress socketAddress, GameProfile gameProfile, CallbackInfoReturnable<Component> cir) {
-        if (socketAddress == null || socketAddress instanceof DialtoneAddress || Mirror.isSingleplayerOwnerObj(getServer(), gameProfile)) {
+        if (socketAddress == null || Mirror.isSingleplayerOwnerObj(getServer(), gameProfile)) {
             cir.setReturnValue(null);
         }
     }

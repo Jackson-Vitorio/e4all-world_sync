@@ -182,92 +182,24 @@ public abstract class ShareToLanScreenMixin extends Screen {
             }
             return null;
         };
-        Object onPress = Proxy.newProxyInstance(
-            Button.OnPress.class.getClassLoader(),
-            new Class<?>[]{Button.OnPress.class},
-            handler
-        );
         try {
-            Method builderMethod = e4all$findStaticBuilder();
-            if (builderMethod != null) {
-                builderMethod.setAccessible(true);
-                Object builder = builderMethod.invoke(null, text, onPress);
-                E4allClient.LOGGER.debug("[e4all] Button.builder() returned: {}", builder.getClass().getName());
-                Method boundsMethod = e4all$findBoundsMethod(builder.getClass());
-                if (boundsMethod != null) {
-                    boundsMethod.setAccessible(true);
-                    Object next = boundsMethod.invoke(builder, x, y, w, h);
-                    if (next != null) {
-                        builder = next;
-                    }
-                }
-                Method buildMethod = e4all$findBuildMethod(builder.getClass());
-                if (buildMethod != null) {
-                    buildMethod.setAccessible(true);
-                    Object built = buildMethod.invoke(builder);
-                    if (built != null) {
-                        E4allClient.LOGGER.debug("[e4all] Button built via builder pattern: {}", built.getClass().getName());
-                        return built;
-                    }
+            Class<?> onPressClass = null;
+            for (Class<?> c : Button.class.getDeclaredClasses()) {
+                if (c.getName().endsWith("OnPress")) {
+                    onPressClass = c;
+                    break;
                 }
             }
+            if (onPressClass != null) {
+                Object onPress = Proxy.newProxyInstance(
+                    onPressClass.getClassLoader(),
+                    new Class<?>[]{onPressClass},
+                    handler
+                );
+                return Mirror.createButton(x, y, w, h, text, onPress);
+            }
         } catch (Throwable t) {
-            E4allClient.LOGGER.debug("[e4all] Button.builder() path failed, trying legacy constructor", t);
-        }
-        try {
-            Constructor<?> ctor = Button.class.getConstructor(
-                int.class, int.class, int.class, int.class, Component.class, Button.OnPress.class
-            );
-            Object button = ctor.newInstance(x, y, w, h, text, onPress);
-            E4allClient.LOGGER.debug("[e4all] Button built via legacy constructor");
-            return button;
-        } catch (Throwable t) {
-            E4allClient.LOGGER.debug("[e4all] Legacy Button constructor not available", t);
-        }
-        return null;
-    }
-    @Unique
-    private static Method e4all$findStaticBuilder() {
-        for (Method m : Button.class.getMethods()) {
-            if (!Modifier.isStatic(m.getModifiers())) continue;
-            Class<?>[] params = m.getParameterTypes();
-            if (params.length != 2) continue;
-            if (!params[0].equals(Component.class)) continue;
-            if (!params[1].equals(Button.OnPress.class)) continue;
-            return m;
-        }
-        for (Method m : Button.class.getDeclaredMethods()) {
-            if (!Modifier.isStatic(m.getModifiers())) continue;
-            Class<?>[] params = m.getParameterTypes();
-            if (params.length != 2) continue;
-            if (!params[0].equals(Component.class)) continue;
-            if (!params[1].equals(Button.OnPress.class)) continue;
-            return m;
-        }
-        return null;
-    }
-    @Unique
-    private static Method e4all$findBoundsMethod(Class<?> builderClass) {
-        for (Method m : builderClass.getMethods()) {
-            if (Modifier.isStatic(m.getModifiers())) continue;
-            Class<?>[] params = m.getParameterTypes();
-            if (params.length != 4) continue;
-            if (!params[0].equals(int.class)) continue;
-            if (!params[1].equals(int.class)) continue;
-            if (!params[2].equals(int.class)) continue;
-            if (!params[3].equals(int.class)) continue;
-            if (!m.getReturnType().equals(builderClass)) continue;
-            return m;
-        }
-        return null;
-    }
-    @Unique
-    private static Method e4all$findBuildMethod(Class<?> builderClass) {
-        for (Method m : builderClass.getMethods()) {
-            if (Modifier.isStatic(m.getModifiers())) continue;
-            if (m.getParameterCount() != 0) continue;
-            if (!Button.class.isAssignableFrom(m.getReturnType())) continue;
-            return m;
+            E4allClient.LOGGER.debug("[e4all] Failed to create proxy for Button.OnPress", t);
         }
         return null;
     }

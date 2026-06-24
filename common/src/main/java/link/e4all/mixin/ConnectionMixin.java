@@ -33,7 +33,7 @@ public abstract class ConnectionMixin implements DialtoneConnectionExtensions {
     @Shadow private Channel channel;
 
     @Unique
-    private static volatile DialtoneAddress e4mc$smuggledDialtoneAddress = null;
+    private static final ThreadLocal<DialtoneAddress> e4mc$smuggledDialtoneAddress = new ThreadLocal<>();
 
     @Override
     public byte[] e4mc$exportKeyingMaterial(byte[] label, byte[] context, int length) {
@@ -46,41 +46,41 @@ public abstract class ConnectionMixin implements DialtoneConnectionExtensions {
     @Inject(method = "/^(connect|method_52271|m_290025_)$/", at = @At("HEAD"), require = 0)
     private static void hijackStart(InetSocketAddress inetSocketAddress, @Coerce Object obj, Connection connection, CallbackInfoReturnable<ChannelFuture> cir) {
         if (inetSocketAddress instanceof SmugglersInetSocketAddress smuggledAddress) {
-            e4mc$smuggledDialtoneAddress = new DialtoneAddress(smuggledAddress.ticket);
+            e4mc$smuggledDialtoneAddress.set(new DialtoneAddress(smuggledAddress.ticket));
         }
     }
 
     @Surrogate
     private static void hijackStart(InetSocketAddress inetSocketAddress, boolean bl, Connection connection, CallbackInfoReturnable<ChannelFuture> cir) {
         if (inetSocketAddress instanceof SmugglersInetSocketAddress smuggledAddress) {
-            e4mc$smuggledDialtoneAddress = new DialtoneAddress(smuggledAddress.ticket);
+            e4mc$smuggledDialtoneAddress.set(new DialtoneAddress(smuggledAddress.ticket));
         }
     }
 
     @Surrogate
     private static void hijackStart(InetSocketAddress inetSocketAddress, @Coerce Object obj, Connection connection, CallbackInfo ci) {
         if (inetSocketAddress instanceof SmugglersInetSocketAddress smuggledAddress) {
-            e4mc$smuggledDialtoneAddress = new DialtoneAddress(smuggledAddress.ticket);
+            e4mc$smuggledDialtoneAddress.set(new DialtoneAddress(smuggledAddress.ticket));
         }
     }
 
     @Surrogate
     private static void hijackStart(InetSocketAddress inetSocketAddress, boolean bl, Connection connection, CallbackInfo ci) {
         if (inetSocketAddress instanceof SmugglersInetSocketAddress smuggledAddress) {
-            e4mc$smuggledDialtoneAddress = new DialtoneAddress(smuggledAddress.ticket);
+            e4mc$smuggledDialtoneAddress.set(new DialtoneAddress(smuggledAddress.ticket));
         }
     }
 
     @Inject(method = "name=/^(connectToServer|method_10753|m_178300_)$/ desc=/^\\(Ljava\\/net\\/InetSocketAddress;Z\\)L.+;$/", at = @At("HEAD"), require = 0)
     private static void hijackStartAlt(InetSocketAddress inetSocketAddress, boolean bl, CallbackInfoReturnable<Connection> cir) {
         if (inetSocketAddress instanceof SmugglersInetSocketAddress smuggledAddress) {
-            e4mc$smuggledDialtoneAddress = new DialtoneAddress(smuggledAddress.ticket);
+            e4mc$smuggledDialtoneAddress.set(new DialtoneAddress(smuggledAddress.ticket));
         }
     }
 
     @ModifyArg(method = "/^(connect|method_52271|m_290025_|connectToServer|method_10753|m_178300_)$/", at = @At(value = "INVOKE", target = "Lio/netty/bootstrap/Bootstrap;channel(Ljava/lang/Class;)Lio/netty/bootstrap/AbstractBootstrap;"), require = 0)
     private static Class hijackChannel(Class clazz) {
-        if (e4mc$smuggledDialtoneAddress != null) {
+        if (e4mc$smuggledDialtoneAddress.get() != null) {
             return DialtoneChannel.class;
         } else {
             return clazz;
@@ -89,7 +89,7 @@ public abstract class ConnectionMixin implements DialtoneConnectionExtensions {
 
     @ModifyArg(method = "/^(connect|method_52271|m_290025_|connectToServer|method_10753|m_178300_)$/", at = @At(value = "INVOKE", target = "Lio/netty/bootstrap/Bootstrap;group(Lio/netty/channel/EventLoopGroup;)Lio/netty/bootstrap/AbstractBootstrap;"), require = 0)
     private static EventLoopGroup hijackGroup(EventLoopGroup group) {
-        if (e4mc$smuggledDialtoneAddress != null) {
+        if (e4mc$smuggledDialtoneAddress.get() != null) {
             return DialtoneAmbientSession.INSTANCE.group;
         } else {
             return group;
@@ -98,9 +98,9 @@ public abstract class ConnectionMixin implements DialtoneConnectionExtensions {
 
     @WrapOperation(method = "/^(connect|method_52271|m_290025_|connectToServer|method_10753|m_178300_)$/", at = @At(value = "INVOKE", target = "Lio/netty/bootstrap/Bootstrap;connect(Ljava/net/InetAddress;I)Lio/netty/channel/ChannelFuture;"), require = 0)
     private static ChannelFuture hijackConnect(Bootstrap instance, InetAddress inetHost, int inetPort, Operation<ChannelFuture> operation) {
-        if (e4mc$smuggledDialtoneAddress != null) {
-            var ret = instance.connect(e4mc$smuggledDialtoneAddress);
-            e4mc$smuggledDialtoneAddress = null;
+        if (e4mc$smuggledDialtoneAddress.get() != null) {
+            var ret = instance.connect(e4mc$smuggledDialtoneAddress.get());
+            e4mc$smuggledDialtoneAddress.remove();
             return ret;
         } else {
             return operation.call(instance, inetHost, inetPort);
@@ -111,9 +111,9 @@ public abstract class ConnectionMixin implements DialtoneConnectionExtensions {
     // instead of Bootstrap.connect(InetAddress, int). This overload handles that signature.
     @WrapOperation(method = "/^(connect|method_52271|m_290025_|connectToServer|method_10753|m_178300_)$/", at = @At(value = "INVOKE", target = "Lio/netty/bootstrap/Bootstrap;connect(Ljava/net/SocketAddress;)Lio/netty/channel/ChannelFuture;"), require = 0)
     private static ChannelFuture hijackConnectSocketAddress(Bootstrap instance, SocketAddress remoteAddress, Operation<ChannelFuture> operation) {
-        if (e4mc$smuggledDialtoneAddress != null) {
-            var ret = instance.connect(e4mc$smuggledDialtoneAddress);
-            e4mc$smuggledDialtoneAddress = null;
+        if (e4mc$smuggledDialtoneAddress.get() != null) {
+            var ret = instance.connect(e4mc$smuggledDialtoneAddress.get());
+            e4mc$smuggledDialtoneAddress.remove();
             return ret;
         } else {
             return operation.call(instance, remoteAddress);
@@ -124,29 +124,17 @@ public abstract class ConnectionMixin implements DialtoneConnectionExtensions {
     // method, even if the @WrapOperation hooks didn't fire (e.g., on an unknown MC version).
     @Inject(method = "/^(connect|method_52271|m_290025_|connectToServer|method_10753|m_178300_)$/", at = @At("RETURN"), require = 0)
     private static void e4all$cleanupSmuggledAddress(CallbackInfoReturnable<?> cir) {
-        e4mc$smuggledDialtoneAddress = null;
+        e4mc$smuggledDialtoneAddress.remove();
     }
 
     @Surrogate
     private static void e4all$cleanupSmuggledAddress(CallbackInfo ci) {
-        e4mc$smuggledDialtoneAddress = null;
+        e4mc$smuggledDialtoneAddress.remove();
     }
 
-    @Inject(method = "/^(setEncryptionKey|method_10746|m_129506_)$/", at = @At("HEAD"), cancellable = true, require = 0)
+    @Inject(method = "/^(setEncryptionKey|method_10746|m_129506_)$/", at = @At(value = "FIELD", target = "Lnet/minecraft/network/Connection;channel:Lio/netty/channel/Channel;", opcode = org.objectweb.asm.Opcodes.GETFIELD, ordinal = 0), cancellable = true, require = 0)
     private void killDoubleEncryption(Cipher cipher, Cipher cipher2, CallbackInfo ci) {
         if (channel instanceof DialtoneChannel) {
-            // Mark the connection as encrypted if the field still exists (pre-26.2).
-            // In 26.2+ the field was removed, but the cancellation alone is sufficient
-            // to prevent double encryption on DialtoneChannel.
-            try {
-                java.lang.reflect.Field encryptedField = Connection.class.getDeclaredField("encrypted");
-                encryptedField.setAccessible(true);
-                encryptedField.setBoolean((Connection)(Object)this, true);
-            } catch (NoSuchFieldException ignored) {
-                // MC 26.2+ removed this field — safe to skip
-            } catch (Exception e) {
-                E4allClient.LOGGER.debug("Could not set encrypted field", e);
-            }
             ci.cancel();
         }
     }

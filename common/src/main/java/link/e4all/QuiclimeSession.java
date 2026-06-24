@@ -301,6 +301,10 @@ public class QuiclimeSession {
                     fail(datagramChannelFuture.cause());
                     return;
                 }
+                if (state == State.STOPPING || state == State.STOPPED) {
+                    ((ChannelFuture) datagramChannelFuture).channel().close();
+                    return;
+                }
                 datagramChannel = (DatagramChannel) ((ChannelFuture) datagramChannelFuture).channel();
                 QuicChannel.newBootstrap(datagramChannel)
                         .streamHandler(handler)
@@ -364,6 +368,9 @@ public class QuiclimeSession {
                         fail(quicChannelFuture.cause());
                         return;
                     }
+                    if (state == State.STOPPING || state == State.STOPPED) {
+                        return;
+                    }
                     quicChannel = (QuicChannel) quicChannelFuture.get();
 
                     // Start QUIC-level keepalive pings to prevent idle timeout
@@ -387,9 +394,13 @@ public class QuiclimeSession {
                                         assignedDomain = domain;
                                         LOGGER.info("Domain assigned: {}", domain);
                                         if (Agnos.isClient()) {
+                                            Component domainComponent = Mirror.literal(domain);
+                                            if (Config.INSTANCE.hideDomainInChat.value()) {
+                                                domainComponent = Mirror.translatable("text.e4all_minecraft.hiddenDomain");
+                                            }
                                             Component message = Mirror.append(Mirror.translatable(
                                                     "text.e4all_minecraft.domainAssigned",
-                                                    Mirror.withStyle(Mirror.literal(domain), it ->
+                                                    Mirror.withStyle(domainComponent, it ->
                                                     it
                                                             .withClickEvent(Mirror.copyToClipboard(domain))
                                                             .withColor(ChatFormatting.GREEN)
@@ -480,7 +491,6 @@ public class QuiclimeSession {
             });
         } catch (Throwable e) {
             fail(e);
-            throw new RuntimeException(e);
         }
     }
 

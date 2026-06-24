@@ -9,7 +9,6 @@
     "BanPlayerCommandsMixin",
     "ConnectionMixin",
     "MinecraftServerMixin",
-    "OfflineModeMixin",
     "PardonCommandMixin",
     "ServerboundKeyPacketMixin",
     "ServerConnectionListenerMixin",

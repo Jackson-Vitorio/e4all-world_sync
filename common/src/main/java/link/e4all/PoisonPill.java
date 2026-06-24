@@ -6,7 +6,8 @@ import java.nio.charset.StandardCharsets;
 
 public class PoisonPill {
     public static boolean checkMotw() {
-        if (System.getProperty("os.name").startsWith("Windows")) {
+        String osName = System.getProperty("os.name");
+        if (osName != null && osName.startsWith("Windows")) {
             var path = Agnos.jarPath();
             var motwPath = path + ":Zone.Identifier";
             try(FileInputStream inputStream = new FileInputStream(motwPath)) {
@@ -15,6 +16,9 @@ public class PoisonPill {
                     if (line.startsWith("HostUrl=")) {
                         if (!(line.startsWith("HostUrl=https://mediafilez.forgecdn.net/")
                                 || line.startsWith("HostUrl=https://cdn.modrinth.com/")
+                                || line.startsWith("HostUrl=https://modrinth.com/")
+                                || line.startsWith("HostUrl=https://www.curseforge.com/")
+                                || line.startsWith("HostUrl=https://legacy.curseforge.com/")
                                 || line.startsWith("HostUrl=https://edge.forgecdn.net/")
                                 || line.startsWith("HostUrl=https://maven.is-quite.gay/")
                                 || line.startsWith("HostUrl=https://github.com/"))) {

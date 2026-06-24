@@ -224,16 +224,19 @@ public class VoiceChatPacketHelper {
                                 }
                             } catch (NoSuchMethodException ignored) {}
                         }
-                        for (String writeMethodName : new String[]{"write", "m_293152_"}) {
+                        for (String writeMethodName : new String[]{"write", "toBytes", "m_293152_"}) {
                             try {
                                 Method writeMethod = result.getClass().getMethod(writeMethodName, friendlyByteBufClass);
                                 ByteBuf newRawBuf = Unpooled.buffer();
-                                Object newFriendlyBuf = friendlyByteBufConstructor.newInstance(newRawBuf);
-                                writeMethod.invoke(result, newFriendlyBuf);
-                                byte[] data = new byte[newRawBuf.readableBytes()];
-                                newRawBuf.readBytes(data);
-                                newRawBuf.release();
-                                return data;
+                                try {
+                                    Object newFriendlyBuf = friendlyByteBufConstructor.newInstance(newRawBuf);
+                                    writeMethod.invoke(result, newFriendlyBuf);
+                                    byte[] data = new byte[newRawBuf.readableBytes()];
+                                    newRawBuf.readBytes(data);
+                                    return data;
+                                } finally {
+                                    newRawBuf.release();
+                                }
                             } catch (NoSuchMethodException ignored) {}
                         }
                     }

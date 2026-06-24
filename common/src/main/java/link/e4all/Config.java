@@ -34,6 +34,9 @@ public class Config extends ReflectiveConfig {
     @Comment("Whether the offline mode warning has already been shown to the user")
     public final TrackedValue<Boolean> offlineWarningShown = this.value(false);
 
+    @Comment("Whether to hide the domain in the chat message (click to copy still works)")
+    public final TrackedValue<Boolean> hideDomainInChat = this.value(false);
+
     @Comment("Whether to enable the Simple Voice Chat bridge (tunnels voice chat UDP through the e4all connection)")
     public final TrackedValue<Boolean> voiceChatBridgeEnabled = this.value(true);
 }

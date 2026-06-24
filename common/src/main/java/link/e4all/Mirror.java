@@ -244,6 +244,7 @@ public class Mirror {
             try {
                 Method method = clazz.getMethod(methodName);
                 profile = method.invoke(player);
+                break;
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {}
         }
         Class<MinecraftServer> clazz2 = MinecraftServer.class;
@@ -290,7 +291,19 @@ public class Mirror {
             try {
                 Minecraft.getInstance().gui.getChat().addMessage(message);
             } catch (NoSuchMethodError e) {
-                var chat = Minecraft.getInstance().gui.getChat();
+                net.minecraft.client.gui.components.ChatComponent chat;
+                try {
+                    chat = Minecraft.getInstance().gui.getChat();
+                } catch (NoSuchMethodError ex) {
+                    try {
+                        var gui = Minecraft.getInstance().gui;
+                        var hud = gui.getClass().getField("hud").get(gui);
+                        chat = (net.minecraft.client.gui.components.ChatComponent) hud.getClass().getMethod("getChat").invoke(hud);
+                    } catch (Throwable exc) {
+                        E4allClient.LOGGER.error("Failed to get client chat!");
+                        return;
+                    }
+                }
                 try {
                     chat.getClass().getMethod("addClientSystemMessage", Component.class).invoke(chat, message);
                 } catch (Exception ex) {
@@ -298,6 +311,94 @@ public class Mirror {
                 }
             }
         });
+    }
+
+    public static Object createButton(int x, int y, int w, int h, Component text, Object onPress) {
+        try {
+            Method builderMethod = null;
+            for (Method m : net.minecraft.client.gui.components.Button.class.getMethods()) {
+                if (java.lang.reflect.Modifier.isStatic(m.getModifiers()) && m.getParameterCount() == 2) {
+                    if (m.getParameterTypes()[0].equals(Component.class) && m.getParameterTypes()[1].getName().endsWith("OnPress")) {
+                        builderMethod = m;
+                        break;
+                    }
+                }
+            }
+            if (builderMethod == null) {
+                for (Method m : net.minecraft.client.gui.components.Button.class.getDeclaredMethods()) {
+                    if (java.lang.reflect.Modifier.isStatic(m.getModifiers()) && m.getParameterCount() == 2) {
+                        if (m.getParameterTypes()[0].equals(Component.class) && m.getParameterTypes()[1].getName().endsWith("OnPress")) {
+                            builderMethod = m;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            if (builderMethod != null) {
+                builderMethod.setAccessible(true);
+                Object builder = builderMethod.invoke(null, text, onPress);
+                
+                boolean boundsSet = false;
+                for (Method m : builder.getClass().getMethods()) {
+                    if (!java.lang.reflect.Modifier.isStatic(m.getModifiers()) && m.getParameterCount() == 4) {
+                        if (m.getParameterTypes()[0].equals(int.class) && m.getParameterTypes()[1].equals(int.class)
+                            && m.getParameterTypes()[2].equals(int.class) && m.getParameterTypes()[3].equals(int.class)) {
+                            m.setAccessible(true);
+                            Object next = m.invoke(builder, x, y, w, h);
+                            if (next != null) builder = next;
+                            boundsSet = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (!boundsSet) {
+                    Method posMethod = null;
+                    Method sizeMethod = null;
+                    for (Method m : builder.getClass().getMethods()) {
+                        if (!java.lang.reflect.Modifier.isStatic(m.getModifiers()) && m.getParameterCount() == 2 && m.getParameterTypes()[0].equals(int.class) && m.getParameterTypes()[1].equals(int.class)) {
+                            String n = m.getName();
+                            if (n.equals("pos") || n.equals("position") || n.equals("method_46430")) posMethod = m;
+                            else if (n.equals("size") || n.equals("dimensions") || n.equals("method_46432") || n.equals("method_46434")) sizeMethod = m;
+                        }
+                    }
+                    if (posMethod != null && sizeMethod != null) {
+                        posMethod.setAccessible(true);
+                        Object next = posMethod.invoke(builder, x, y);
+                        if (next != null) builder = next;
+                        sizeMethod.setAccessible(true);
+                        next = sizeMethod.invoke(builder, w, h);
+                        if (next != null) builder = next;
+                    }
+                }
+                
+                for (Method m : builder.getClass().getMethods()) {
+                    if (!java.lang.reflect.Modifier.isStatic(m.getModifiers()) && m.getParameterCount() == 0 && net.minecraft.client.gui.components.Button.class.isAssignableFrom(m.getReturnType())) {
+                        m.setAccessible(true);
+                        return m.invoke(builder);
+                    }
+                }
+            }
+        } catch (Throwable ignored) {}
+        
+        try {
+            Class<?> onPressClass = null;
+            for (Class<?> c : net.minecraft.client.gui.components.Button.class.getDeclaredClasses()) {
+                if (c.getName().endsWith("OnPress")) {
+                    onPressClass = c;
+                    break;
+                }
+            }
+            if (onPressClass != null) {
+                Constructor<?> ctor = net.minecraft.client.gui.components.Button.class.getConstructor(
+                    int.class, int.class, int.class, int.class, Component.class, onPressClass
+                );
+                return ctor.newInstance(x, y, w, h, text, onPress);
+            }
+        } catch (Throwable ignored) {}
+        
+        return null;
     }
 }
 

@@ -110,6 +110,13 @@ public class DialtoneServerChannel extends AbstractServerChannel {
             eventLoop().execute(() -> {
                 pipeline().fireChannelRead(channel);
                 pipeline().fireChannelReadComplete();
+                if (!closed && config().isAutoRead()) {
+                    try {
+                        doBeginRead();
+                    } catch (Exception e) {
+                        pipeline().fireExceptionCaught(e);
+                    }
+                }
             });
             preconn.thenAccept(conn -> {
                 E4allClient.LOGGER.info("conn accepted, dialtone child pre-active");
