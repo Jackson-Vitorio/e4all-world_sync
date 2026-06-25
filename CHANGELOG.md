@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.6.1
+* fixed bugs like invalid session
+* still working on fixing svc
+
 ### 1.6.5
 * Experimental 26.2 support.
 * Internal code cleanups.
