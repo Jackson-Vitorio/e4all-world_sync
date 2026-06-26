@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.6.2
+* Integrated new community translations from upstream e4mc pull requests:
+  * @nunoguevara - Indonesian translation (new) [e4mc PR #293]
+  * @NuruddinPlays - Updated Malay & Malay (Jawi) translations [e4mc PR #292]
+  * @zelear - Added missing German & Russian translation keys [e4mc PR #280]
+
 ### 1.6.1
 * fixed bugs like invalid session
 * still working on fixing svc

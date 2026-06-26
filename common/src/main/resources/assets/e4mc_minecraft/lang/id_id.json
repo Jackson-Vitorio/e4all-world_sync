@@ -1,0 +1,10 @@
+{
+    "text.e4all_minecraft.domainAssigned": "Permainan lokal di-host pada domain [%s]",
+    "text.e4all_minecraft.closeServer": "Permainan lokal tidak lagi di-host secara publik",
+    "text.e4all_minecraft.serverAlreadyClosed": "Permainan lokal tidak di-host secara publik",
+    "text.e4all_minecraft.clickToStop": " (Klik di sini untuk berhenti)",
+    "text.e4all_minecraft.error": "Terjadi kesalahan di e4all",
+    "text.e4all_minecraft.doctor.start": "Menyusun informasi troubleshooting. Harap tunggu.",
+    "text.e4all_minecraft.poisonpill.badurl": "e4all diunduh dari sumber yang tidak dikenal. Salinan e4all ini mungkin sudah usang atau telah dimodifikasi.",
+    "text.e4all_minecraft.hiddenDomain": "disembunyikan, klik untuk menyalin"
+}
