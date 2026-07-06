@@ -19,7 +19,18 @@ public class VoiceChatBridgeInitializer extends ChannelInboundHandlerAdapter {
     }
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        ctx.pipeline().addBefore(ctx.name(), null, originalHandler);
+        try {
+            ctx.pipeline().addBefore(ctx.name(), null, originalHandler);
+        } catch (Throwable t) {
+            LOGGER.warn("Failed to add original handler to pipeline, adding as last resort", t);
+            try {
+                if (ctx.pipeline().context(originalHandler) == null) {
+                    ctx.pipeline().addFirst(originalHandler);
+                }
+            } catch (Throwable t2) {
+                LOGGER.error("Failed to add original handler entirely", t2);
+            }
+        }
         if (ctx.channel().isRegistered()) {
             addBridgeHandler(ctx);
         }
@@ -33,28 +44,44 @@ public class VoiceChatBridgeInitializer extends ChannelInboundHandlerAdapter {
         if (ctx.pipeline().context(this) == null) {
             return; 
         }
-        Channel ch = ctx.channel();
-        if (Config.INSTANCE.voiceChatBridgeEnabled.value()) {
-            try {
-                VoiceChatBridgeHandler bridgeHandler = new VoiceChatBridgeHandler(isServerSide);
-                if (ch.pipeline().get("packet_handler") != null) {
-                    ch.pipeline().addBefore("packet_handler", "e4all_voicebridge", bridgeHandler);
-                    LOGGER.debug("Added voice chat bridge handler to {} pipeline", isServerSide ? "server" : "client");
-                } else {
-                    ch.pipeline().addLast("e4all_voicebridge", bridgeHandler);
-                    LOGGER.debug("Added voice chat bridge handler to {} pipeline (at end, packet_handler not found)", isServerSide ? "server" : "client");
+        try {
+            Channel ch = ctx.channel();
+            if (Config.INSTANCE.voiceChatBridgeEnabled.value()) {
+                try {
+                    if (ch.pipeline().get("e4all_voicebridge") != null) {
+                        ctx.pipeline().remove(this);
+                        return;
+                    }
+                    VoiceChatBridgeHandler bridgeHandler = new VoiceChatBridgeHandler(isServerSide);
+                    if (ch.pipeline().get("packet_handler") != null) {
+                        ch.pipeline().addBefore("packet_handler", "e4all_voicebridge", bridgeHandler);
+                        LOGGER.debug("Added voice chat bridge handler to {} pipeline", isServerSide ? "server" : "client");
+                    } else {
+                        ch.pipeline().addLast("e4all_voicebridge", bridgeHandler);
+                        LOGGER.debug("Added voice chat bridge handler to {} pipeline (at end, packet_handler not found)", isServerSide ? "server" : "client");
+                    }
+                    if (ch.pipeline().get("e4all_vc_raw_codec") == null) {
+                        if (ch.pipeline().get("splitter") != null) {
+                            ch.pipeline().addAfter("splitter", "e4all_vc_raw_codec", new VoiceChatRawCodec(bridgeHandler));
+                            LOGGER.debug("Added voice chat raw codec after splitter");
+                        } else if (ch.pipeline().get("decoder") != null) {
+                            ch.pipeline().addBefore("decoder", "e4all_vc_raw_codec", new VoiceChatRawCodec(bridgeHandler));
+                            LOGGER.debug("Added voice chat raw codec before decoder (splitter not found)");
+                        }
+                    }
+                } catch (Exception e) {
+                    LOGGER.debug("Could not add voice chat bridge handler", e);
                 }
-                if (ch.pipeline().get("splitter") != null) {
-                    ch.pipeline().addAfter("splitter", "e4all_vc_raw_codec", new VoiceChatRawCodec(bridgeHandler));
-                    LOGGER.debug("Added voice chat raw codec after splitter");
-                } else if (ch.pipeline().get("decoder") != null) {
-                    ch.pipeline().addBefore("decoder", "e4all_vc_raw_codec", new VoiceChatRawCodec(bridgeHandler));
-                    LOGGER.debug("Added voice chat raw codec before decoder (splitter not found)");
-                }
-            } catch (Exception e) {
-                LOGGER.debug("Could not add voice chat bridge handler", e);
             }
+        } catch (Throwable t) {
+            LOGGER.warn("Error in voice chat bridge initialization", t);
         }
-        ctx.pipeline().remove(this);
+        try {
+            if (ctx.pipeline().context(this) != null) {
+                ctx.pipeline().remove(this);
+            }
+        } catch (Throwable t) {
+            LOGGER.debug("Could not remove VoiceChatBridgeInitializer from pipeline", t);
+        }
     }
 }

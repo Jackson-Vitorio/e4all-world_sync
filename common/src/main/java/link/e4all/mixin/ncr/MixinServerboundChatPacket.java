@@ -12,6 +12,8 @@ public class MixinServerboundChatPacket {
 
     @Inject(method = "signature", at = @At("RETURN"), cancellable = true, require = 0)
     private void e4all$onGetSignature(CallbackInfoReturnable<MessageSignature> info) {
-        info.setReturnValue(null);
+        if (link.e4all.Config.INSTANCE.offlineMode.value()) {
+            info.setReturnValue(null);
+        }
     }
 }

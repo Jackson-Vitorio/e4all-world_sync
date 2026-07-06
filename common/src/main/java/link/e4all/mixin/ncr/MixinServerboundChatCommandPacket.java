@@ -12,6 +12,8 @@ public class MixinServerboundChatCommandPacket {
 
     @Inject(method = "argumentSignatures", at = @At("RETURN"), cancellable = true, require = 0)
     private void e4all$onGetSignatures(CallbackInfoReturnable<ArgumentSignatures> info) {
-        info.setReturnValue(ArgumentSignatures.EMPTY);
+        if (link.e4all.Config.INSTANCE.offlineMode.value()) {
+            info.setReturnValue(ArgumentSignatures.EMPTY);
+        }
     }
 }

@@ -30,6 +30,7 @@ public abstract class MixinConnection {
 
     @Inject(method = "send(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketSendListener;)V", at = @At("HEAD"), cancellable = true, require = 0)
     private void e4all$onSend(Packet<?> packet, @Nullable PacketSendListener packetSendListener, CallbackInfo info) {
+        if (!link.e4all.Config.INSTANCE.offlineMode.value()) return;
         if (!e4all$converting.get() && packet instanceof ClientboundPlayerChatPacket chat) {
             info.cancel();
             Packet<?> systemPacket = e4all$toSystemChat(packetListener, chat);
@@ -44,6 +45,7 @@ public abstract class MixinConnection {
 
     @Inject(method = "send(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketSendListener;Z)V", at = @At("HEAD"), cancellable = true, require = 0)
     private void e4all$onSend3(Packet<?> packet, @Nullable PacketSendListener packetSendListener, boolean flush, CallbackInfo info) {
+        if (!link.e4all.Config.INSTANCE.offlineMode.value()) return;
         if (!e4all$converting.get() && packet instanceof ClientboundPlayerChatPacket chat) {
             info.cancel();
             Packet<?> systemPacket = e4all$toSystemChat(packetListener, chat);

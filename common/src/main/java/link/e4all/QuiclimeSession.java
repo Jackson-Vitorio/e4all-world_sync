@@ -26,6 +26,7 @@ import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -361,7 +362,7 @@ public class QuiclimeSession {
                                 }
                             }
                         })
-                        .remoteAddress(new InetSocketAddress(InetAddress.getByName(relayInfo.host), relayInfo.port))
+                        .remoteAddress(new InetSocketAddress(resolvePreferIpv4(relayInfo.host), relayInfo.port))
                         .connect()
                         .addListener(quicChannelFuture -> {
                     if (!quicChannelFuture.isSuccess()) {
@@ -563,6 +564,16 @@ public class QuiclimeSession {
         datagramChannel = null;
     }
 
+
+    private static InetAddress resolvePreferIpv4(String host) throws java.net.UnknownHostException {
+        InetAddress[] all = InetAddress.getAllByName(host);
+        for (InetAddress addr : all) {
+            if (addr instanceof Inet4Address) {
+                return addr;
+            }
+        }
+        return all[0];
+    }
 
     private static ByteBuf writeVarInt(ByteBuf buf, int value) {
         while ((value & 0xffffff80) != 0) {

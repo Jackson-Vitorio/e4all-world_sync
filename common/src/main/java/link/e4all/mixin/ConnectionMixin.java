@@ -139,11 +139,14 @@ public abstract class ConnectionMixin implements DialtoneConnectionExtensions {
         }
     }
 
-    // Add client-side voice chat bridge handler to ALL connections
     @Inject(method = "channelActive", at = @At("TAIL"), require = 0)
     private void e4all$addVoiceBridgeOnActive(ChannelHandlerContext ctx, CallbackInfo ci) {
         if (Config.INSTANCE.voiceChatBridgeEnabled.value()) {
             try {
+                if (channel.pipeline().get("e4all_voicebridge") != null) {
+                    return;
+                }
+
                 VoiceChatBridgeHandler bridgeHandler = new VoiceChatBridgeHandler(false);
 
                 if (channel.pipeline().get("packet_handler") != null) {
@@ -152,12 +155,12 @@ public abstract class ConnectionMixin implements DialtoneConnectionExtensions {
                     channel.pipeline().addLast("e4all_voicebridge", bridgeHandler);
                 }
 
-                // Add the raw codec after the splitter so voice frames are intercepted
-                // before they reach decompress or decoder
-                if (channel.pipeline().get("splitter") != null) {
-                    channel.pipeline().addAfter("splitter", "e4all_vc_raw_codec", new VoiceChatRawCodec(bridgeHandler));
-                } else if (channel.pipeline().get("decoder") != null) {
-                    channel.pipeline().addBefore("decoder", "e4all_vc_raw_codec", new VoiceChatRawCodec(bridgeHandler));
+                if (channel.pipeline().get("e4all_vc_raw_codec") == null) {
+                    if (channel.pipeline().get("splitter") != null) {
+                        channel.pipeline().addAfter("splitter", "e4all_vc_raw_codec", new VoiceChatRawCodec(bridgeHandler));
+                    } else if (channel.pipeline().get("decoder") != null) {
+                        channel.pipeline().addBefore("decoder", "e4all_vc_raw_codec", new VoiceChatRawCodec(bridgeHandler));
+                    }
                 }
 
                 E4allClient.LOGGER.debug("Added client-side voice chat bridge to connection");

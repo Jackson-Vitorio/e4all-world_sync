@@ -12,6 +12,8 @@ public class MixinServerboundChatSessionUpdatePacket {
 
     @Inject(method = "handle", at = @At("HEAD"), cancellable = true, require = 0)
     private void e4all$onHandle(ServerGamePacketListener listener, CallbackInfo info) {
-        info.cancel();
+        if (link.e4all.Config.INSTANCE.offlineMode.value()) {
+            info.cancel();
+        }
     }
 }

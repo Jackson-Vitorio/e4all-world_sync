@@ -1,5 +1,6 @@
 package link.e4all.mixin.ncr;
 
+import link.e4all.Config;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -11,6 +12,8 @@ public class MixinDedicatedServer {
 
     @Inject(method = "enforceSecureProfile", at = @At("RETURN"), cancellable = true, require = 0)
     private void e4all$onEnforceSecureProfile(CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(false);
+        if (Config.INSTANCE.offlineMode.value()) {
+            cir.setReturnValue(false);
+        }
     }
 }
