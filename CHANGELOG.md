@@ -1,15 +1,15 @@
 # Changelog
 
 ### 1.6.2
-* Integrated new community translations from upstream e4mc pull requests:
-  * @nunoguevara - Indonesian translation (new) [e4mc PR #293]
-  * @NuruddinPlays - Updated Malay & Malay (Jawi) translations [e4mc PR #292]
-  * @zelear - Added missing German & Russian translation keys [e4mc PR #280]
+* **Fixes:**
+  * Fixed connection errors, invalid sessions, and voice chat bridge crashes.
+  * Gated secure profile disabling and chat signature changes under offline mode.
+* **Translations:**
+  * Integrated new community translations from upstream e4mc pull requests:
+    * @nunoguevara - Indonesian translation (new) [e4mc PR #293]
+    * @NuruddinPlays - Updated Malay & Malay (Jawi) translations [e4mc PR #292]
+    * @zelear - Added missing German & Russian translation keys [e4mc PR #280]
 
-### 1.6.1
-* fixed bugs like invalid session
-* still working on fixing svc
-* Experimental 26.2 support.
 
 ### 1.6.0
 * https://github.com/Synquox/e4all/pull/7 Pull request from khoingt helped making this fix.
