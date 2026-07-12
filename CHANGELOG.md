@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.6.3
+* **Fixes:**
+  * Fixed "Invalid Session" connection issues for offline/cracked players joining LAN worlds.
+* **Removals:**
+  * Removed Simple Voice Chat (SVC) integration temporarily to resolve connection bugs.
+
 ### 1.6.2
 * **Fixes:**
   * Fixed connection errors, invalid sessions, and voice chat bridge crashes.
