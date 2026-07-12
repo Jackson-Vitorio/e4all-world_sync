@@ -5,8 +5,6 @@ import io.netty.channel.EventLoopGroup;
 import link.e4all.Config;
 import link.e4all.E4allClient;
 import link.e4all.QuiclimeSession;
-import link.e4all.VoiceChatBridge;
-import link.e4all.VoiceChatBridgeInitializer;
 import net.minecraft.server.network.ServerConnectionListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -69,8 +67,7 @@ public abstract class ServerConnectionListenerMixin {
                         return;
                     }
                 }
-                E4allClient.session = new QuiclimeSession(new VoiceChatBridgeInitializer(e4mc$childHandler, true), e4mc$group);
-                VoiceChatBridge.resetCachedPort(); // Re-detect SVC on each session start
+                E4allClient.session = new QuiclimeSession(e4mc$childHandler, e4mc$group);
                 e4mc$childHandler = null;
                 e4mc$group = null;
                 E4allClient.session.startAsync();
@@ -92,5 +89,3 @@ public abstract class ServerConnectionListenerMixin {
         }
     }
 }
-
-

@@ -18,7 +18,6 @@ public class E4allClient {
 
     public static void init() {
         Config.INSTANCE.id(); // Touch to initialize for McQoy
-        VoiceChatPacketHelper.initReflection(); // ponytail: init on main thread before netty threads need it
         try {
             if (!PoisonPill.checkMotw()) {
                 badurl = true;
@@ -80,15 +79,10 @@ public class E4allClient {
                                 if (E4allClient.session != null) {
                                     var rawHandler = E4allClient.session.handler;
                                     var group = E4allClient.session.group;
-                                    if (rawHandler instanceof VoiceChatBridgeInitializer wrapper) {
-                                        rawHandler = wrapper.getOriginalHandler();
-                                    }
                                     if (E4allClient.session.state != QuiclimeSession.State.STOPPED) {
                                         E4allClient.session.stop();
                                     }
-                                    VoiceChatBridge.resetCachedPort();
-                                    E4allClient.session = new QuiclimeSession(
-                                        new VoiceChatBridgeInitializer(rawHandler, true), group);
+                                    E4allClient.session = new QuiclimeSession(rawHandler, group);
                                     E4allClient.session.startAsync();
                                     Mirror.sendSuccessToSource(ctx.getSource(), Mirror.literal("e4all: Restarting relay connection..."));
                                 } else {

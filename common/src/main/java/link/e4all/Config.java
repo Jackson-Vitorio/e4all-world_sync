@@ -30,13 +30,11 @@ public class Config extends ReflectiveConfig {
     public final TrackedValue<Boolean> dialtoneSanitizeTicket = this.value(true);
 
     @Comment("Whether to enable offline mode (disables Microsoft authentication for ALL LAN connections, including both tunneled and direct). Toggle via the 'Online Mode' button on the Open to LAN screen.")
-    public final TrackedValue<Boolean> offlineMode = this.value(false);
+    public final TrackedValue<Boolean> offlineMode = this.value(true);
     @Comment("Whether the offline mode warning has already been shown to the user")
     public final TrackedValue<Boolean> offlineWarningShown = this.value(false);
 
     @Comment("Whether to hide the domain in the chat message (click to copy still works)")
     public final TrackedValue<Boolean> hideDomainInChat = this.value(false);
 
-    @Comment("Whether to enable the Simple Voice Chat bridge (tunnels voice chat UDP through the e4all connection)")
-    public final TrackedValue<Boolean> voiceChatBridgeEnabled = this.value(true);
 }

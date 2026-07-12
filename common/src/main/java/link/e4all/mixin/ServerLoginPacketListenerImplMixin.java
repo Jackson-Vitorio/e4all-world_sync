@@ -41,11 +41,11 @@ public class ServerLoginPacketListenerImplMixin {
 
     @ModifyArg(method = "/^(handleHello|method_14369|m_10049_)$/", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/login/ClientboundHelloPacket;<init>(Ljava/lang/String;[B[BZ)V"), index = 3, require = 0)
     private boolean e4all$modifyNeedsAuthentication(boolean needsAuth) {
-        if (connection.getRemoteAddress() instanceof DialtoneAddress) {
-            return true;
-        }
         if (link.e4all.Config.INSTANCE.offlineMode.value()) {
             return false;
+        }
+        if (connection.getRemoteAddress() instanceof DialtoneAddress) {
+            return true;
         }
         return needsAuth;
     }
