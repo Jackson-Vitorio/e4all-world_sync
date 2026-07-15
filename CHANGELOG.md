@@ -1,4 +1,8 @@
 # Changelog
+ 
+### 1.6.4
+* **Fixes:**
+  * Improved offline mode compatibility by injecting into server authentication checks and adding missing yarn mapping redirects.
 
 ### 1.6.3
 * **Fixes:**

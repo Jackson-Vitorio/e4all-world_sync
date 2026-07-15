@@ -16,4 +16,11 @@ public class MinecraftServerMixin {
             cir.setReturnValue(false);
         }
     }
+
+    @Inject(method = "usesAuthentication", at = @At("HEAD"), cancellable = true, require = 0)
+    private void e4all$usesAuthentication(CallbackInfoReturnable<Boolean> cir) {
+        if (Config.INSTANCE.offlineMode.value()) {
+            cir.setReturnValue(false);
+        }
+    }
 }
