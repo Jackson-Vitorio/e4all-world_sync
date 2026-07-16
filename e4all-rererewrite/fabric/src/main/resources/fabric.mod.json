@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "e4all",
+  "version": "${version}",
+  "name": "e4all",
+  "description": "Open a LAN server to anyone, anywhere, anytime. Enhanced with Online/Offline Mode support.",
+  "authors": [
+    "JustPixel"
+  ],
+  "contributors": [
+    "skyevg (Original e4mc infrastructure)"
+  ],
+  "contact": {
+    "sources": "https://github.com/Synquox/e4all"
+  },
+  "license": "MIT",
+  "icon": "e4all_icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "link.e4all.fabric.E4allClientFabric"
+    ],
+    "modmenu": [
+      "link.e4all.mundosync.gui.MundoSyncModMenuApi"
+    ]
+  },
+  "mixins": [
+    "e4all.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.0",
+    "fabric-api": "*",
+    "minecraft": ">=1.18"
+  },
+  "provides": [
+    "e4mc_minecraft",
+    "e4mc"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+    "text.e4all_minecraft.domainAssigned": "Жергілікті сервер [%s] доменінде орналасқан",
+    "text.e4all_minecraft.closeServer": "Жергілікті сервер енді жалпыға қолжетімді емес",
+    "text.e4all_minecraft.serverAlreadyClosed": "Жергілікті сервер жалпыға қолжетімді емес",
+    "text.e4all_minecraft.clickToStop": " (Тоқтату үшін осы жерді басыңыз)",
+    "text.e4all_minecraft.error": "e4all ішінде қате пайда болды"
+}

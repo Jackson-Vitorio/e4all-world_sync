@@ -1,0 +1,9 @@
+{
+  "text.e4all_minecraft.domainAssigned": "Урындағы донъя хәҙер тышҡы адрес аша асыла: [%s]",
+  "text.e4all_minecraft.closeServer": "Урындағы донъя интернет аша инде асылмай",
+  "text.e4all_minecraft.serverAlreadyClosed": "Урындағы донъя интернеттан инде өҙөлгән",
+  "text.e4all_minecraft.clickToStop": " (Өҙөү өсөн баҫығыҙ)",
+  "text.e4all_minecraft.error": "e4all'та хата килеп сыҡты",
+  "text.e4all_minecraft.doctor.start": "Диагностика өсөн мәғлүмәт йыйыла. Зинһар, бер аҙ көтөгөҙ.",
+  "text.e4all_minecraft.poisonpill.badurl": "e4all билдәһеҙ сығанаҡтан күсереп алынған. Был версия иҫкергән йәки үҙгәртелгән булыуы мөмкин."
+}

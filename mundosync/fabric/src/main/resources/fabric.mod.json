@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "mundosync",
+  "version": "${version}",
+  "name": "MundoSync",
+  "description": "Sync your Minecraft worlds via GitHub. Upload and download worlds with a single click.",
+  "authors": [
+    "Jackson-Vitorio"
+  ],
+  "contact": {
+    "sources": "https://github.com/Jackson-Vitorio/minecraft_share"
+  },
+  "license": "MIT",
+  "icon": "e4all_icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "link.mundosync.fabric.MundoSyncClientFabric"
+    ],
+    "modmenu": [
+      "link.mundosync.gui.MundoSyncModMenuApi"
+    ]
+  },
+  "mixins": [
+    "mundosync.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.0",
+    "fabric-api": "*",
+    "minecraft": ">=1.20"
+  },
+  "provides": [
+    "e4mc_minecraft",
+    "e4mc"
+  ]
+}

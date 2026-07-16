@@ -1,0 +1,98 @@
+plugins {
+    id 'com.gradleup.shadow'
+    id "me.modmuss50.mod-publish-plugin" version "1.1.0"
+}
+
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modApi "net.fabricmc.fabric-api:${rootProject.fabric_api_version}"
+
+    // ModMenu integration
+    modCompileOnly files("$rootProject.projectDir/libs/modmenu.jar")
+
+    common(project(path: ":mundosync:common", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":mundosync:common", configuration: "unstubbedJar")) { transitive false }
+
+    // GitHub World Sync dependencies
+    shadowCommon("org.eclipse.jgit:org.eclipse.jgit:6.5.0.202303070854-r") {
+        transitive false
+    }
+    shadowCommon("org.kohsuke:github-api:2.0-rc.3") {
+        transitive false
+    }
+    shadowCommon("com.fasterxml.jackson.core:jackson-databind:2.13.4")
+    shadowCommon("com.fasterxml.jackson.core:jackson-core:2.13.4")
+    shadowCommon("com.fasterxml.jackson.core:jackson-annotations:2.13.4")
+    shadowCommon("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+shadowJar {
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier = "dev-shadow"
+
+    relocate "dev.dirs", "link.mundosync.shadow.dirs"
+}
+
+remapJar {
+    injectAccessWidener = true
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+}
+
+sourcesJar {
+    def commonSources = project(":mundosync:common").unstubbedSourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+tasks.register('patchFmj', Jar) {
+    archiveClassifier = 'dev-shadow-modern'
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from(file("src/main/resources-modern"), zipTree(shadowJar.archiveFile))
+    dependsOn shadowJar
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+tasks.register("modernRemapJar", net.fabricmc.loom.task.RemapJarTask) {
+    injectAccessWidener = true
+    input.set patchFmj.archiveFile
+    dependsOn patchFmj
+    archiveClassifier = "modern"
+    sourceNamespace = "intermediary"
+    targetNamespace = "named"
+}
+
+assemble.dependsOn(modernRemapJar)
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}

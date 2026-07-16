@@ -1,0 +1,31 @@
+modLoader = "javafml"
+loaderVersion = "*"
+license = "MIT"
+
+[[mods]]
+modId = "e4all"
+version = "${version}"
+displayName = "e4all"
+logoFile = "e4all_icon.png"
+credits = "skyevg (original e4mc)"
+authors = "JustPixel"
+description = '''
+Open a LAN server to anyone, anywhere, anytime. Fork of e4mc with Offline Mode support.
+'''
+
+[[mixins]]
+config = "e4all.mixins.json"
+
+[[dependencies.e4all]]
+modId = "neoforge"
+mandatory = true
+versionRange = "*"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.e4all]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.18,)"
+ordering = "NONE"
+side = "BOTH"

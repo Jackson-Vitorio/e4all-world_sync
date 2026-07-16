@@ -1,0 +1,36 @@
+{
+  "required": true,
+  "package": "link.e4all.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "plugin": "link.e4all.mixin.E4allMixinPlugin",
+  "mixins": [
+    "BanListCommandsMixin",
+    "BanPlayerCommandsMixin",
+    "ConnectionMixin",
+    "MinecraftServerMixin",
+    "PardonCommandMixin",
+    "ServerboundKeyPacketMixin",
+    "ServerConnectionListenerMixin",
+    "ServerLoginPacketListenerImplMixin",
+    "WhitelistCommandMixin",
+    "ncr.MixinConnection",
+    "ncr.MixinPlayerList",
+    "ncr.MixinServerboundChatCommandPacket",
+    "ncr.MixinServerboundChatPacket",
+    "ncr.MixinServerboundChatSessionUpdatePacket",
+    "PlayerListMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "ClientHandshakePacketListenerImplMixin",
+    "ServerAddressMixin",
+    "ServerNameResolverMixin",
+    "ShareToLanScreenMixin"
+  ],
+  "server": [
+    "ncr.MixinDedicatedServer"
+  ]
+}

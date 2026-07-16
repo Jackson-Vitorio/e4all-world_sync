@@ -1,0 +1,7 @@
+{
+  "text.e4all_minecraft.domainAssigned": "Jogo local hospedado no domínio [%s]",
+  "text.e4all_minecraft.closeServer": "Jogo local não é mais hospedado publicamente",
+  "text.e4all_minecraft.serverAlreadyClosed": "Jogo local já está fechado publicamente",
+  "text.e4all_minecraft.clickToStop": " (Clique aqui para parar)",
+  "text.e4all_minecraft.error": "Ocorreu um erro no e4all"
+}
