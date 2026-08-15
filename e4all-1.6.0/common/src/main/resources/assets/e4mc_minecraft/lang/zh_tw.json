@@ -1,7 +1,0 @@
-{
-    "text.e4all_minecraft.domainAssigned": "本地遊戲已託管在網域 [%s]",
-    "text.e4all_minecraft.closeServer": "本地遊戲不再公開託管",
-    "text.e4all_minecraft.serverAlreadyClosed": "本地遊戲未公開託管",
-    "text.e4all_minecraft.clickToStop": "（點擊此處停止）",
-    "text.e4all_minecraft.error": "在 e4all 中發生了個錯誤"
-}

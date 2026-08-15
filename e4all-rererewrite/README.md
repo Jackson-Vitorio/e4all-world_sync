@@ -74,7 +74,7 @@ The mod stores its configuration in `~/.minecraft/config/e4all.toml`:
 # MundoSync Config
 mundoSyncEnabled = true
 mundoSyncUsername = "SEU_NOME_AQUI"
-mundoSyncWorldPath = "/home/jack/.minecraft/saves"
+mundoSyncWorldPath = "~/.minecraft/saves"
 mundoSyncWorldName = "NOME_DA_PASTA_DO_MUNDO"
 mundoSyncWebhookUrl = "" # optional - for Discord notifications
 
@@ -141,7 +141,7 @@ Access the GUI through ModMenu → e4all → Config:
 
 3. **Does the world path exist?**
    ```bash
-   ls -la /home/jack/.minecraft/saves/NOME_DO_MUNDO
+   ls -la ~/.minecraft/saves/NOME_DO_MUNDO
    ```
    Should show the world folder
 

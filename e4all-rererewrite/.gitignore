@@ -17,3 +17,20 @@ classes/
 .vscode
 .settings
 *.launch
+
+# Segurança: credenciais e configurações locais nunca devem ser versionadas
+.env
+.env.*
+*.env
+secrets.properties
+secrets.gradle
+local.properties
+gradle.properties.local
+*.keystore
+*.jks
+*.p12
+*.pem
+id_rsa
+id_rsa.pub
+config/*.toml
+config/*.properties

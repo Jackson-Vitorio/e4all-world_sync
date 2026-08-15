@@ -9,7 +9,6 @@ pluginManagement {
     }
 }
 
-include("e4all-1.6.0")
 include("e4all-rererewrite")
 include("mundosync")
 include("mundosync:common")

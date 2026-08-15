@@ -93,7 +93,7 @@ public class MundoSyncCommands {
                                         + "§7Mundo Path: §f" + val(Config.INSTANCE.mundoSyncWorldPath.value()) + "\n"
                                         + "§7Mundo Nome: §f" + val(Config.INSTANCE.mundoSyncWorldName.value()) + "\n"
                                         + "§7Webhook: §f" + val(Config.INSTANCE.mundoSyncWebhookUrl.value()) + "\n"
-                                        + "§7GitHub Token: §f" + val(Config.INSTANCE.githubToken.value()) + "\n"
+                                        + "§7GitHub Token: §f" + maskToken(Config.INSTANCE.githubToken.value()) + "\n"
                                         + "§7GitHub Enabled: §f" + Config.INSTANCE.githubSyncEnabled.value();
                                     Mirror.sendSuccessToSource(ctx.getSource(), Mirror.literal(s));
                                     return 1;
@@ -205,8 +205,7 @@ public class MundoSyncCommands {
                                     }))
                                     .then(Commands.literal("status").executes(ctx -> {
                                         String token = Config.INSTANCE.githubToken.value();
-                                        String maskedToken = token.isEmpty() ? "§7<não configurado>" 
-                                            : "§f" + token.substring(0, 6) + "..." + token.substring(token.length() - 4);
+                                        String maskedToken = maskToken(token);
                                         Mirror.sendSuccessToSource(ctx.getSource(),
                                             Mirror.literal("§e=== GitHub Sync Status ===\n"
                                                 + "§7Token: " + maskedToken + "\n"
@@ -246,6 +245,20 @@ public class MundoSyncCommands {
 
     private static String val(String s) {
         return (s == null || s.isEmpty()) ? "§7<não configurado>" : s;
+    }
+
+    /**
+     * Exibe o token GitHub apenas de forma mascarada (prefixo + sufixo),
+     * para nunca vazar o token completo no chat ou em logs.
+     */
+    private static String maskToken(String token) {
+        if (token == null || token.isEmpty()) {
+            return "§7<não configurado>";
+        }
+        if (token.length() <= 10) {
+            return "§f" + token.substring(0, Math.min(4, token.length())) + "****";
+        }
+        return "§f" + token.substring(0, 6) + "..." + token.substring(token.length() - 4);
     }
 
 }

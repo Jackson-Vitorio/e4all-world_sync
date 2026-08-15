@@ -1,7 +1,0 @@
-{
-    "text.e4all_minecraft.domainAssigned": "Локальна гра розміщена на домені [%s]",
-    "text.e4all_minecraft.closeServer": "Локальна гра більше не є загальнодоступною",
-    "text.e4all_minecraft.serverAlreadyClosed": "Локальна гра не є загальнодоступною",
-    "text.e4all_minecraft.clickToStop": " (Натисніть тут, щоб зупинити)",
-    "text.e4all_minecraft.error": "Виникла помилка в e4all"
-}
